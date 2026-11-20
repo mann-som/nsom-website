@@ -84,6 +84,10 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {"default": {
     "ENGINE": "django.db.backends.sqlite3",
     "NAME": env("DB_PATH", default=str(BASE_DIR / "db.sqlite3")),
+    "OPTIONS": {
+        "init_command": "PRAGMA journal_mode=WAL; PRAGMA synchronous=NORMAL;",
+        "transaction_mode": "IMMEDIATE",
+    },
 }}
 
 
@@ -144,4 +148,11 @@ if not DEBUG:
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-    SECURE_HSTS_SECONDS = 3600  
+    SECURE_HSTS_SECONDS = 3600
+
+    LOGGING = {
+        "version": 1,
+        "disable_existing_loggers": False,
+        "handlers": {"console": {"class": "logging.StreamHandler"}},
+        "root": {"handlers": ["console"], "level": "WARNING"},
+    }
